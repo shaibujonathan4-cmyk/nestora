@@ -1,0 +1,17 @@
+{
+  "name": "Nestora",
+  "short_name": "Nestora",
+  "description": "Find properties that match your needs and connect with property agents.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#101C3A",
+  "theme_color": "#101C3A",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
