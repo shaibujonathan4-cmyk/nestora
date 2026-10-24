@@ -30,8 +30,8 @@ app.use('/api/support', supportRouter);
 async function start() {
   try {
     await initializeDatabase();
-    app.listen(port, '127.0.0.1', () => {
-      console.log(`Nestora API running at http://127.0.0.1:${port}`);
+    app.listen(port, '0.0.0.0', () => {
+      console.log(`Nestora API listening on 0.0.0.0:${port}`);
     });
   } catch (error) {
     console.error('Could not connect to PostgreSQL. Check DATABASE_URL and network access.', error);
