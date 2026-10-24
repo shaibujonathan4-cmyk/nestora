@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { initializeDatabase } from './db';
+import { initializeDatabase, query } from './db';
 import authRouter from './routes/auth';
 import requestsRouter from './routes/requests';
 import supportRouter from './routes/support';
@@ -21,6 +21,23 @@ app.use(express.json({ limit: '20kb' }));
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', service: 'Nestora API' });
+});
+
+app.get('/api/agents/count', async (_req, res) => {
+  try {
+    const result = await query(`
+      SELECT COUNT(*)::int AS count
+      FROM users
+      WHERE role = 'agent'
+        AND agent_status = 'approved'
+        AND deleted_at IS NULL
+    `);
+
+    res.json({ count: result.rows[0].count });
+  } catch (error) {
+    console.error('Failed to count approved agents:', error);
+    res.status(500).json({ error: 'Could not retrieve agent count.' });
+  }
 });
 
 app.use('/api/auth', authRouter);

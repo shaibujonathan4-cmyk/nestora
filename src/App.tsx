@@ -2,7 +2,7 @@ import HelpSupport from './HelpSupport';
 import SeekerDashboard from './SeekerDashboard';
 import AgentDashboard from './AgentDashboard'
 import AdminDashboard from './AdminDashboard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ArrowRight,
   Bell,
@@ -21,6 +21,8 @@ import {
 } from 'lucide-react'
 import './App.css'
 import AuthModal from './AuthModal'
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:4000';
 
 const areas = [
   'Barnawa',
@@ -102,6 +104,25 @@ const sampleRequests = [
 ]
 
 function App() {
+  const [approvedAgentCount, setApprovedAgentCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetch(`${API_BASE}/api/agents/count`)
+      .then(response => {
+        if (!response.ok) throw new Error('Could not load agent count');
+        return response.json();
+      })
+      .then(data => {
+        if (active && Number.isFinite(data.count)) {
+          setApprovedAgentCount(data.count);
+        }
+      })
+      .catch(error => console.error('Agent count unavailable:', error));
+
+    return () => { active = false; };
+  }, []);
+
   const [menuOpen, setMenuOpen] = useState(false)
   const [selectedArea, setSelectedArea] = useState('All Kaduna')
   const [selectedType, setSelectedType] = useState('All properties')
@@ -210,6 +231,15 @@ function App() {
                 Find a property <ArrowRight size={17} />
               </button>
               <a className="text-link" href="#how-it-works">See how it works <ArrowRight size={16} /></a>
+            </div>
+
+            <div className="approved-agent-counter" aria-live="polite">
+              <div className="approved-agent-heading">Agents on Nestora</div>
+              <div className="approved-agent-stat">
+                <span className="approved-agent-number">
+                  {approvedAgentCount === null ? '—' : approvedAgentCount.toLocaleString()}
+                </span>
+              </div>
             </div>
 
             <div className="trust-row">
