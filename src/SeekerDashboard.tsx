@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  Home, PlusCircle, ClipboardList, MessageSquare,
+  Home, PlusCircle, ClipboardList,
   ShieldCheck, LogOut, MapPin, Wallet, Clock, Trash2,
   ChevronRight, X, CheckCircle2
 } from 'lucide-react';
@@ -391,12 +391,6 @@ export default function SeekerDashboard({ user, onLogout }: Props) {
                 <span className="nd-stat-label">Request fee</span>
                 <strong>₦500</strong>
                 <small>Per Kaduna area</small>
-              </article>
-              <article className="nd-stat-card">
-                <span className="nd-stat-icon"><MessageSquare size={19} /></span>
-                <span className="nd-stat-label">Agent responses</span>
-                <strong>—</strong>
-                <small>Response service not connected yet</small>
               </article>
             </section>
 
