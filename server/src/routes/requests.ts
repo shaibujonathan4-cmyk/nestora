@@ -708,7 +708,7 @@ router.get('/mine', async (req: AuthenticatedRequest, res: Response) => {
     const user = req.nestoraUser!;
     const result = await query(
       `SELECT r.id, r.property_type, r.area, r.budget, r.requirements,
-              r.status, r.created_at, r.published_at, r.expires_at,
+              r.status, r.progress_status, r.created_at, r.published_at, r.expires_at,
               r.claimed_at,
               agent.full_name AS assigned_agent_name,
               agent.phone AS assigned_agent_phone,

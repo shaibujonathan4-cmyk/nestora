@@ -21,6 +21,7 @@ type Draft = {
   details: string;
   createdAt: string;
   status: string;
+  progressStatus?: string;
   assignedAgentName?: string | null;
   assignedAgentPhone?: string | null;
   assignedAgentEmail?: string | null;
@@ -164,6 +165,7 @@ export default function SeekerDashboard({ user, onLogout }: Props) {
         details: r.requirements || r.details || '',
         createdAt: r.created_at || r.createdAt || new Date().toISOString(),
         status: r.status || 'Pending',
+        progressStatus: r.progress_status || 'claimed',
         assignedAgentName: r.assigned_agent_name || null,
         assignedAgentPhone: r.assigned_agent_phone || null,
         assignedAgentEmail: r.assigned_agent_email || null
@@ -319,9 +321,6 @@ export default function SeekerDashboard({ user, onLogout }: Props) {
             <ClipboardList size={18} /> My requests
             {requests.length > 0 && <span className="nd-count">{requests.length}</span>}
           </button>
-          <button onClick={() => { setShowForm(true); setNotice(''); }}>
-            <PlusCircle size={18} /> Find a property
-          </button>
         </nav>
 
         <div className="nd-sidebar-bottom">
@@ -330,14 +329,21 @@ export default function SeekerDashboard({ user, onLogout }: Props) {
             <strong>Your privacy matters</strong>
             <p>Your contact details stay private until you approve sharing them.</p>
           </div>
-          <button
-            className="nd-delete-account"
-            onClick={deleteAccount}
-            disabled={deletingAccount}
-          >
-            <Trash2 size={18} /> {deletingAccount ? 'Deleting account…' : 'Delete my account'}
-          </button>
-          <button className="nd-logout" onClick={onLogout}><LogOut size={18} /> Sign out</button>
+          <div className="nd-account-actions">
+            <span className="nd-account-label">ACCOUNT</span>
+            <button className="nd-logout" onClick={onLogout}><LogOut size={18} /> Sign out</button>
+          </div>
+          <div className="nd-danger-zone">
+            <strong>Danger zone</strong>
+            <p>Deleting your account is permanent.</p>
+            <button
+              className="nd-delete-account"
+              onClick={deleteAccount}
+              disabled={deletingAccount}
+            >
+              <Trash2 size={16} /> {deletingAccount ? 'Deleting account…' : 'Delete account'}
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -369,9 +375,6 @@ export default function SeekerDashboard({ user, onLogout }: Props) {
                 <span className="nd-pill">YOUR NEXT MOVE STARTS HERE</span>
                 <h2>What kind of place<br />are you looking for?</h2>
                 <p>Share your budget and preferred Kaduna area. Matching agents can then respond to your needs.</p>
-                <button className="nd-light-button" onClick={() => setShowForm(true)}>
-                  Create a request <ChevronRight size={17} />
-                </button>
               </div>
               <div className="nd-house-art"><Home size={92} strokeWidth={1.1} /></div>
             </section>
@@ -510,8 +513,13 @@ function RequestCard({ request, onRetry, onCancel }: {
         )}
       </div>
       <div className="nd-request-status">
-        <span><Clock size={14} /> {request.status}</span>
+        <span><Clock size={14} /> Request: {request.status.replace(/_/g, ' ')}</span>
         <small>{new Date(request.createdAt).toLocaleDateString('en-NG')}</small>
+        <span>Agent progress: {{
+          claimed: 'Agent assigned',
+          in_progress: 'In progress',
+          completed: 'Completed'
+        }[request.progressStatus || 'claimed'] || 'Agent assigned'}</span>
       </div>
       {request.status === 'pending_payment' && (
         <div className="nd-pending-actions">
